@@ -1,0 +1,9 @@
+{
+  "firebase": "onion-captain",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
