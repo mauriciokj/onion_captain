@@ -1,5 +1,3 @@
-SCORE = 0
-
 var play = function(game){}
 
 play.prototype = {

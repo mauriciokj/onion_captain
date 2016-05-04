@@ -1,6 +1,6 @@
 var x = 400;
 var y = 490;
-
+SCORE = 0
 
 var game = new Phaser.Game(x, y, Phaser.CANVAS, '')
 game.state.add("Preload",preload);
