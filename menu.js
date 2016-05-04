@@ -6,7 +6,13 @@ menu.prototype = {
 
   },
   create: function(){
-    var playButton = this.game.add.button(100,100,"play", this.playTheGame,this);
+    var backgroud = this.game.add.sprite(game.camera.width / 2, game.camera.height / 2, 'background');
+    backgroud.height = game.height;
+    backgroud.anchor.setTo(0.5, 0.5);
+    backgroud.fixedToCamera = true;
+    backgroud.smoothed = false;
+
+    var playButton = this.game.add.button(200, 350,"play", this.playTheGame, this);
     playButton.anchor.setTo(0.5,0.5);
   },
   playTheGame: function(){
