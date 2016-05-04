@@ -7,4 +7,5 @@ game.state.add("Preload",preload);
 game.state.add("boot",boot);
 game.state.add("menu",menu);
 game.state.add("play",play);
+game.state.add("gameover", gameover)
 game.state.start("boot");

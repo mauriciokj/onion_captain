@@ -1,5 +1,6 @@
-var play = function(game){}
+SCORE = 0
 
+var play = function(game){}
 
 play.prototype = {
   preload: function(){
@@ -36,7 +37,7 @@ play.prototype = {
 
   update: function() {
     if (this.bird.inWorld == false){
-      this.game.state.start("menu" );
+      this.game.state.start("gameover");
     }
 
     game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
@@ -94,6 +95,7 @@ play.prototype = {
 
           this.score += 1;
           this.labelScore.text = this.score;
+          SCORE = this.score;
         },
 
 
