@@ -23,8 +23,10 @@ play.prototype = {
     // New anchor position
     this.bird.anchor.setTo(-0.2, 0.5);
 
+
     var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     spaceKey.onDown.add(this.jump, this);
+    this.input.onDown.add(this.jump, this);
 
     this.score = 0;
     this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
