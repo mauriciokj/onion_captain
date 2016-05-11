@@ -5,22 +5,21 @@ play.prototype = {
     game.stage.backgroundColor = '#71c5cf';
     game.load.image('bird', 'assets/bird.png');
     game.load.image('pipe', 'assets/pipe.png');
+    game.load.image('pudim', 'assets/pudim.png');
 
-        // Load the jump sound
-        game.load.audio('jump', 'assets/jump.wav');
-      },
-      create: function(){
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.pipes = game.add.group();
-        this.pipes.enableBody = true;
-        this.pipes.createMultiple(20, 'pipe');
-        this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
+    game.load.audio('jump', 'assets/jump.wav');
+  },
+  create: function(){
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.pudim = this.game.add.sprite(1000, 1000, 'pudim');
+    this.pipes = game.add.group();
+    this.pipes.enableBody = true;
+    this.pipes.createMultiple(20, 'pipe');
+    this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
 
-        this.bird = this.game.add.sprite(100, 245, 'bird');
-        game.physics.arcade.enable(this.bird);
-        this.bird.body.gravity.y = 1000;
-
-    // New anchor position
+    this.bird = this.game.add.sprite(100, 245, 'bird');
+    game.physics.arcade.enable(this.bird);
+    this.bird.body.gravity.y = 1000;
     this.bird.anchor.setTo(-0.2, 0.5);
 
 
@@ -41,61 +40,71 @@ play.prototype = {
     }
 
     game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
+    game.physics.arcade.overlap(this.bird, this.pudim, this.hitPudim, null, this);
 
-        // Slowly rotate the bird downward, up to a certain point.
-        if (this.bird.angle < 20)
-          this.bird.angle += 1;
-      },
-      jump: function() {
-        // If the bird is dead, he can't jump
-        if (this.bird.alive == false)
-          return;
+    if (this.bird.angle < 20)
+      this.bird.angle += 1;
+  },
+  jump: function() {
+    if (this.bird.alive == false)
+      return;
 
-        this.bird.body.velocity.y = -350;
+    this.bird.body.velocity.y = -350;
 
-        // Jump animation
-        game.add.tween(this.bird).to({angle: -20}, 100).start();
+    game.add.tween(this.bird).to({angle: -20}, 100).start();
 
-        // Play sound
-        this.jumpSound.play();
-      },
+    this.jumpSound.play();
+  },
 
-      hitPipe: function() {
-        // If the bird has already hit a pipe, we have nothing to do
-        if (this.bird.alive == false)
-          return;
+  hitPipe: function() {
+    if (this.bird.alive == false)
+      return;
 
-        // Set the alive property of the bird to false
-        this.bird.alive = false;
+    this.bird.alive = false;
 
-        // Prevent new pipes from appearing
-        this.game.time.events.remove(this.timer);
+    this.game.time.events.remove(this.timer);
+    this.pudim.body.velocity.x = 0;
+    this.pipes.forEachAlive(function(p){
+      p.body.velocity.x = 0;
+    }, this);
+  },
 
-        // Go through all the pipes, and stop their movement
-        this.pipes.forEachAlive(function(p){
-          p.body.velocity.x = 0;
-        }, this);
-      },
+  hitPudim: function() {
+    this.pudim.kill()
+    SCORE ++;
+    this.labelScore.text = SCORE;
 
-      addOnePipe: function(x, y) {
-        var pipe = this.pipes.getFirstDead();
+  },
 
-        pipe.reset(x, y);
-        pipe.body.velocity.x = -200;
-        pipe.checkWorldBounds = true;
-        pipe.outOfBoundsKill = true;
-      },
+  addOnePipe: function(x, y) {
+    var pipe = this.pipes.getFirstDead();
 
-      addRowOfPipes: function() {
-        var hole = Math.floor(Math.random()*5)+1;
+    pipe.reset(x, y);
+    pipe.body.velocity.x = -200;
+    pipe.checkWorldBounds = true;
+    pipe.outOfBoundsKill = true;
+  },
 
-        for (var i = 0; i < 8; i++)
-          if (i != hole && i != hole +1)
-            this.addOnePipe(400, i*60+10);
+  addPudim: function(x,y){
+    game.physics.arcade.enable(this.pudim);
+    this.pudim.reset(x, y);
+    this.pudim.body.velocity.x = -200;
+    this.pudim.checkWorldBounds = true;
 
-          SCORE += 1;
-          this.labelScore.text = SCORE;
-        },
+  },
 
+  addRowOfPipes: function() {
+    var hole = Math.floor(Math.random()*5)+1;
 
+    for (var i = 0; i < 8; i++)
+
+      if (i == hole){
+        this.addPudim(400, i*60+40);
+      } else if (i != hole && i != hole +1){
+        this.addOnePipe(400, i*60+10);
       }
+
+    },
+
+
+  }
